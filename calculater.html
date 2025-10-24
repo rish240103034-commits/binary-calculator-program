@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+<title>Binary Calculator</title>
+<style>
+button{
+color:#F0F6FC;
+font-weight:bold;
+margin:5px;
+background-color:#30363D;
+border-radius:20%;
+height:60px;
+border-left: 5px solid black;border-bottom:5px solid black;}
+</style>
+<script>
+let abc = "";
+let bcd = "";
+
+// Reset current and store previous
+function reseeet() {
+  let box = document.getElementById("texty");
+  abc = box.value;
+  box.value = "";
+}
+
+// Previous and Next operations
+function prevop() {
+  let box = document.getElementById("texty");
+  bcd = box.value;
+  box.value = abc;
+}
+function nextop() {
+  let box = document.getElementById("texty");
+  abc = box.value;
+  box.value = bcd;
+}
+
+// Add binary digits
+function getP() {
+  document.getElementById("texty").value += "0";
+}
+function get1() {
+  document.getElementById("texty").value += "1";
+}
+
+// Insert operator text
+function setOp(op) {
+  document.getElementById("texty").value += op;
+}
+
+// Evaluate expression
+function getequal() {
+  let box = document.getElementById("texty");
+  let expr = box.value.trim().toUpperCase();
+
+  try {
+    let a = "", b = "", op = "", result;
+
+    // Detect operator automatically (logical or bitwise)
+    if (expr.includes("AND")) {
+      [a, b] = expr.split("AND");
+      op = "&&";
+    } else if (expr.includes("OR")) {
+      [a, b] = expr.split("OR");
+      op = "||";
+    }
+    // Bitwise symbols
+    else if (expr.includes("&")) {
+      [a, b] = expr.split("&");
+      op = "AND";
+    } else if (expr.includes("|")) {
+      [a, b] = expr.split("|");
+      op = "OR";
+    } else if (expr.includes("^")) {
+      [a, b] = expr.split("^");
+      op = "XOR";
+    } else if (expr.includes(">>>")) {
+      [a, b] = expr.split(">>>");
+      op = "URS";
+    } else if (expr.includes("<<")) {
+      [a, b] = expr.split("<<");
+      op = "LS";
+    } else if (expr.includes(">>")) {
+      [a, b] = expr.split(">>");
+      op = "RS";
+    } else if (expr.startsWith("NOT")) {
+      b = expr.replace("NOT", "").trim();
+      op = "NOT";
+    } else if (expr.startsWith("~")) {
+      b = expr.replace("~", "").trim();
+      op = "~";
+    } else {
+      box.value = "Invalid Expression";
+      return;
+    }
+
+    // Clean and convert operands
+    a = a ? a.trim() : "";
+    b = b ? b.trim() : "";
+    let num1 = a ? parseInt(a, 2) : 0;
+    let num2 = b ? parseInt(b, 2) : 0;
+
+    // Compute based on detected operator
+    switch (op) {
+      case "&&": result=(num1==0||num2==0)?0:1;break;
+      case "||":result=num1||num2;break;	
+      case "AND": result = num1 & num2; break;
+      case "OR": result = num1 | num2; break;
+      case "XOR": result = num1 ^ num2; break;
+      case "LS": result = num1 << num2; break;
+      case "RS": result = num1 >> num2; break;
+      case "URS": result = num1 >>> num2; break;
+      case "~":result=~num1;break;
+      case "NOT": result =!num1; break; // 8-bit NOT
+      default: result = "Err";
+    }
+
+    // Save previous expression and show result
+    abc = box.value;
+    box.value = result.toString(2);
+  } catch (e) {
+    box.value = "Error";
+  }
+}
+</script>
+</head>
+
+<body style="text-align:center; font-family:Arial;background-color:#0D1117;">
+
+<div style="color:#F0F6FC;margin-top:200px;background:#161B22;margin-left:600px;margin-right:600px;border:2px solid black;border-left: 5px solid black;border-bottom:5px solid black;border-radius:20%;padding-bottom:20px">
+<h2 >Binary Calculator (Logical + Bitwise)</h2>
+<form onsubmit="return false;">
+  <input type="text" id="texty" style="width:430px; height:60px; font-size:20px; text-align:center;background:#00E5FF;border-radius:10%" /><br><br>
+
+  <b><button type="button" onclick="getP()" style="width:50px; margin:0px">0</button>
+  <button type="button" onclick="get1()" style="width:50px; margin:0px">1</button>
+  <button type="button" onclick="getequal()" style="width:100px">=</button>
+  <button type="button" onclick="reseeet()" style="width:100px">Reset</button>
+  <button type="button" onclick="prevop()" style="width:100px">Prev Op</button><br>
+
+  <!-- Logical operators -->
+  <button type="button" onclick="setOp('AND')" style="width:100px">Logical AND</button>
+  <button type="button" onclick="setOp('OR')" style="width:100px">Logical OR</button>
+   <button type="button" onclick="setOp('NOT')" style="width:100px">Logical NOT</button>
+   <button type="button" onclick="nextop()" style="width:100px">Next Op</button><br>
+
+  <!-- Bitwise operators -->
+  <button type="button" onclick="setOp('&')" style="width:100px">Bitwise AND </button>
+  <button type="button" onclick="setOp('|')" style="width:100px">Bitwise OR </button>
+  <button type="button" onclick="setOp('^')" style="width:100px">Bitwise XOR </button>
+  <button type="button" onclick="setOp('~')" style="width:100px">Bitwise NOT </button><br>
+
+  <!-- Shift operators -->
+  <button type="button" onclick="setOp('<<')" style="width:100px">Left Shift </button>
+  <button type="button" onclick="setOp('>>')" style="width:100px">Right Shift</button>
+  <button type="button" onclick="setOp('>>>')" style="width:210px">Unsigned Right Shift </button>
+</form>
+</div>
+<footer style="color:#F0F6FC;">&#169;copyright 2025 calculator program</footer>
+
+</body>
+</html>
+
